@@ -9,22 +9,22 @@ import Validators from '@/views/Validators/Validators.vue'
 import Upgrades from '@/views/Upgrades/Upgrades.vue'
 const routerHistory = createWebHistory()
 const routes = [
-	{
-		path: '/',
-		component: Dashboard
-	},
-	{ path: '/accounts', component: Accounts },
-	{ path: '/vendors', component: Vendors },
-	{ path: '/models', component: Models },
-	{ path: '/compliance', component: Compliance },
-	{ path: '/pki', component: PKI },
-	{ path: '/validators', component: Validators},
-	{ path: '/upgrades', component: Upgrades}
+    {
+        path: '/',
+        component: Dashboard
+    },
+    { path: '/accounts', component: Accounts },
+    { path: '/vendors', component: Vendors },
+    { path: '/models', component: Models },
+    { path: '/compliance', component: Compliance },
+    { path: '/pki', component: PKI },
+    { path: '/validators', component: Validators },
+    { path: '/upgrades', component: Upgrades }
 ]
 
 const router = createRouter({
-	history: routerHistory,
-	routes
+    history: routerHistory,
+    routes
 })
 
 export default router
