@@ -6,3 +6,8 @@ justify-content-end {
   width: fit-content;
   margin-right: 1rem;
 }
+
+.p-tooltip {
+  z-index: 9999; /* Adjust this value to be higher than the modal's z-index */
+  max-width: 200px; /* Optional: Adjust max width of the tooltip */
+}

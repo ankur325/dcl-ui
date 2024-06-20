@@ -30,7 +30,8 @@ export default {
             vendorName: null,
             companyLegalName: null,
             companyPreferredName: null,
-            vendorLandingPageURL: null
+            vendorLandingPageURL: null,
+            schemaVersion: 0
         };
     },
     validations() {
@@ -48,7 +49,8 @@ export default {
             },
             companyPreferredName: {},
 
-            vendorLandingPageURL: {}
+            vendorLandingPageURL: {},
+            schemaVersion: {}
         };
     },
     methods: {
@@ -83,7 +85,8 @@ export default {
                         vendorName: this.vendorName,
                         companyLegalName: this.companyLegalName,
                         companyPreferredName: this.companyPreferredName,
-                        vendorLandingPageURL: this.vendorLandingPageURL
+                        vendorLandingPageURL: this.vendorLandingPageURL,
+                        schemaVersion: this.schemaVersion
                     }
                 })
                 .then(
@@ -165,6 +168,10 @@ export default {
                     <td>Vendor Landing Page URL</td>
                     <td>{{ vendorInfo.vendorLandingPageURL }}</td>
                 </tr>
+                <tr>
+                    <td>Schema Version</td>
+                    <td>{{ vendorInfo.schemaVersion }}</td>
+                </tr>
             </table>
         </div>
         <div v-else class="col-12">
@@ -200,8 +207,28 @@ export default {
                         <label for="vendorLandingPageURL">Vendor Landing Page URL</label>
                         <InputText id="vendorLandingPageURL" type="text" v-model="v$.vendorLandingPageURL.$model" :class="{ 'p-invalid': v$.vendorLandingPageURL.$invalid && submitted }" />
                     </div>
+
+                    <!-- Field for schemaVersion -->
                     <div class="field">
-                        <Button v-if="!txProcessing" type="submit" label="Save" icon="pi pi-check" iconPos="left" v-bind:class="[v$.$invalid ? 'p-disabled' : '']" />
+                        <label for="schemaVersion">
+                            <IconField v-tooltip.top="'Schema version is to support backward/forward compatibility (default value is 0)'"
+                                >Schema Version
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
+                        <InputText id="schemaVersion" type="text" v-model="v$.schemaVersion.$model" :class="{ 'p-invalid': v$.schemaVersion.$invalid && submitted }" />
+                    </div>
+
+                    <div class="field">
+                        <Button
+                            v-if="!txProcessing"
+                            type="submit"
+                            label="Save"
+                            v-tooltip="'This will open keplr wallet window. Please finish the transaction there.'"
+                            icon="pi pi-check"
+                            iconPos="left"
+                            v-bind:class="[v$.$invalid ? 'p-disabled' : '']"
+                        />
                         <Button v-if="txProcessing" label="Submitted Tx.." disabled="disabled" icon="pi pi-spin pi-spinner" iconPos="left" />
                         <Button label="Cancel" @click="onClose" class="p-button-secondary" icon="pi pi-times" iconPos="left" />
                     </div>
