@@ -201,15 +201,9 @@ export default {
                         <InputText id="vendorLandingPageURL" type="text" v-model="v$.vendorLandingPageURL.$model" :class="{ 'p-invalid': v$.vendorLandingPageURL.$invalid && submitted }" />
                     </div>
                     <div class="field">
-                        <div class="grid">
-                            <div class="col-3">
-                                <Button v-if="!txProcessing" type="submit" label="Save" icon="pi pi-user" iconPos="left" v-bind:class="[v$.$invalid ? 'p-disabled' : '']" />
-                                <Button v-if="txProcessing" label="Submitted Tx.." disabled="disabled" icon="pi pi-spin pi-spinner" iconPos="left" />
-                            </div>
-                            <div class="col-3">
-                                <Button label="Cancel" @click="onClose" class="p-button-secondary" icon="pi pi-times" iconPos="left" />
-                            </div>
-                        </div>
+                        <Button v-if="!txProcessing" type="submit" label="Save" icon="pi pi-check" iconPos="left" v-bind:class="[v$.$invalid ? 'p-disabled' : '']" />
+                        <Button v-if="txProcessing" label="Submitted Tx.." disabled="disabled" icon="pi pi-spin pi-spinner" iconPos="left" />
+                        <Button label="Cancel" @click="onClose" class="p-button-secondary" icon="pi pi-times" iconPos="left" />
                     </div>
                 </form>
             </div>

@@ -156,13 +156,15 @@ export default {
             <TabPanel header="All Active Accounts">
                 <Button @click="showProposeNewAccountDialog" icon="pi pi-check" v-bind:class="{ 'p-disabled': !isSignedIn }" label="Propose-Account">Propose Account</Button>
                 <div class="mb-4"></div>
-                <DataTable :value="allActiveAccounts" :auto-layout="true" :paginator="true" :rows="10" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
+                <DataTable :value="allActiveAccounts" :auto-layout="true" :paginator="true" :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
                     <template #header>
                         <div class="flex justify-content-end">
-                            <span class="p-input-icon-left">
-                                <i class="pi pi-search" />
+                            <IconField>
+                                <InputIcon>
+                                    <i class="pi pi-search" />
+                                </InputIcon>
                                 <InputText v-model="filters['global'].value" placeholder="Search" />
-                            </span>
+                            </IconField>
                         </div>
                     </template>
 
@@ -212,13 +214,15 @@ export default {
             </TabPanel>
 
             <TabPanel header="All Proposed Accounts">
-                <DataTable :value="allProposedAccounts" :auto-layout="true" :paginator="true" :rows="10" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
+                <DataTable :value="allProposedAccounts" :auto-layout="true" :paginator="true" :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
                     <template #header>
                         <div class="flex justify-content-end">
-                            <span class="p-input-icon-left">
-                                <i class="pi pi-search" />
+                            <IconField>
+                                <InputIcon>
+                                    <i class="pi pi-search" />
+                                </InputIcon>
                                 <InputText v-model="filters['global'].value" placeholder="Search" />
-                            </span>
+                            </IconField>
                         </div>
                     </template>
 
@@ -264,13 +268,15 @@ export default {
                 </DataTable>
             </TabPanel>
             <TabPanel header="All Active Accounts - Pending Revocation">
-                <DataTable :value="allActiveRevocations" :auto-layout="true" :paginator="true" :rows="10" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
+                <DataTable :value="allActiveRevocations" :auto-layout="true" :paginator="true" :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
                     <template #header>
                         <div class="flex justify-content-end">
-                            <span class="p-input-icon-left">
-                                <i class="pi pi-search" />
+                            <IconField>
+                                <InputIcon>
+                                    <i class="pi pi-search" />
+                                </InputIcon>
                                 <InputText v-model="filters['global'].value" placeholder="Search" />
-                            </span>
+                            </IconField>
                         </div>
                     </template>
 

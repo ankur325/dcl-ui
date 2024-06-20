@@ -12,6 +12,7 @@ import { Any } from 'cosmjs-types/google/protobuf/any';
 import { decodePubkey, encodePubkey } from '@cosmjs/proto-signing';
 import { Model } from '../../store/generated/zigbee-alliance/distributed-compliance-ledger/zigbeealliance.distributedcomplianceledger.model/module/types/model/model';
 import Message from 'primevue/message';
+import { scrollToTopMixin } from '../../mixins/scrollToTopMixin';
 export default {
     name: 'ModelInfo',
     components: {
@@ -19,6 +20,7 @@ export default {
         Button,
         Message
     },
+    mixins: [scrollToTopMixin],
     setup: () => ({ v$: useVuelidate() }),
     props: ['selectedModel', 'viewOnly'],
     data() {
@@ -119,6 +121,7 @@ export default {
                         this.$toast.add({ severity: 'error', summary: 'Error while processing Tx', detail: 'ModelInfo Tx failed', life: 3000 });
                         this.txProcessing = false;
                         loader.hide();
+                        this.scrollToTop();
                         this.error = error.message;
                     }
                 );

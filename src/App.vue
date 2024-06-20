@@ -135,7 +135,7 @@ export default {
                 {
                     'layout-overlay': this.layoutMode === 'overlay',
                     'layout-static': this.layoutMode === 'static',
-                    'layout-static-sidebar-inactive': this.staticMenuInactive && this.layoutMode === 'static',
+                    'layout-static-inactive': this.staticMenuInactive && this.layoutMode === 'static',
                     'layout-overlay-sidebar-active': this.overlayMenuActive && this.layoutMode === 'overlay',
                     'layout-mobile-sidebar-active': this.mobileMenuActive,
                     'p-input-filled': this.$primevue.config.inputStyle === 'filled',

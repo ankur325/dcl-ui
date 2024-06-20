@@ -4,13 +4,9 @@ import MultiSelect from 'primevue/multiselect';
 import Button from 'primevue/button';
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
-// import {encoding_1} from "@cosmjs/encoding";
-// const encoding_1 = require('@cosmjs/encoding')
-import { DirectSecp256k1HdWallet, Registry } from '@cosmjs/proto-signing';
-import { assertIsBroadcastTxSuccess, SigningStargateClient, StargateClient } from '@cosmjs/stargate';
-import { fromBase64 } from '@cosmjs/encoding';
-import { Any } from 'cosmjs-types/google/protobuf/any';
-import { decodePubkey, encodePubkey } from '@cosmjs/proto-signing';
+
+import { encodePubkey } from '@cosmjs/proto-signing';
+import { scrollToTopMixin } from './../../mixins/scrollToTopMixin';
 import Message from 'primevue/message';
 export default {
     name: 'ProposeNewAccount',
@@ -20,6 +16,7 @@ export default {
         Button,
         Message
     },
+    mixins: [scrollToTopMixin],
     setup: () => ({ v$: useVuelidate() }),
     data() {
         return {
@@ -106,6 +103,7 @@ export default {
                         this.txProcessing = false;
                         loader.hide();
                         this.error = error.message;
+                        this.scrollToTop();
                     }
                 );
         },
@@ -165,11 +163,9 @@ export default {
 
                     <div class="field">
                         <div class="grid">
-                            <div class="col-3">
+                            <div class="col-12">
                                 <Button v-if="!txProcessing" type="submit" label="Propose Add Account" icon="pi pi-user" iconPos="left" v-bind:class="[v$.$invalid ? 'p-disabled' : '']" />
                                 <Button v-if="txProcessing" label="Submitted Tx.." icon="pi pi-spin pi-spinner" class="p-button" disabled="disabled" iconPos="left" />
-                            </div>
-                            <div class="col-3">
                                 <Button label="Cancel" @click="onClose" class="p-button-secondary" icon="pi pi-times" iconPos="left" />
                             </div>
                         </div>
