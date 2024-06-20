@@ -1,45 +1,63 @@
-<script>
-import AppSubmenu from './AppSubmenu.vue';
+<script setup>
+import { ref } from 'vue';
 
-export default {
-    props: {
-        model: Array
-    },
-    methods: {
-        onMenuItemClick(event) {
-            this.$emit('menuitem-click', event);
-        },
-        onKeyDown(event) {
-            const nodeElement = event.target;
-            if (event.code === 'Enter' || event.code === 'Space') {
-                nodeElement.click();
-                event.preventDefault();
+import AppMenuItem from './AppMenuItem.vue';
+
+menu: [
+    {
+        label: 'Home',
+        items: [
+            {
+                label: 'Dashboard',
+                icon: 'pi pi-fw pi-home',
+                to: '/'
             }
-        },
-        bannerImage() {
-            return this.$appState.darkTheme ? 'images/banner-primeblocks-dark.png' : 'images/banner-primeblocks.png';
-        }
+        ]
     },
-    computed: {
-        appVersion() {
-            return this.$store.getters.appVersion;
-        },
-        darkTheme() {
-            return this.$appState.darkTheme;
-        }
-    },
-    components: {
-        AppSubmenu: AppSubmenu
+    {
+        label: 'DCL Transactions',
+        icon: 'pi pi-fw pi-sitemap',
+        items: [
+            { label: 'Accounts', icon: 'pi pi-fw pi-id-card', to: '/accounts' },
+            { label: 'Vendor Info', icon: 'pi pi-fw pi-briefcase', to: '/vendors' },
+            { label: 'Model', icon: 'pi pi-fw pi-database', to: '/models' },
+            { label: 'Compliance', icon: 'pi pi-fw pi-check-circle', to: '/compliance' },
+            { label: 'PKI', icon: 'pi pi-fw pi-lock', to: '/pki' },
+            { label: 'Validators', icon: 'pi pi-fw pi-server', to: '/validators' },
+            { label: 'Upgrades', icon: 'pi pi-fw pi-history', to: '/upgrades' }
+        ]
     }
-};
+];
+
+const model = ref([
+    {
+        label: 'Home',
+        items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
+    },
+    {
+        label: 'DCL Transactions',
+        icon: 'pi pi-fw pi-sitemap',
+        items: [
+            { label: 'Accounts', icon: 'pi pi-fw pi-id-card', to: '/accounts' },
+            { label: 'Vendor Info', icon: 'pi pi-fw pi-briefcase', to: '/vendors' },
+            { label: 'Model', icon: 'pi pi-fw pi-database', to: '/models' },
+            { label: 'Compliance', icon: 'pi pi-fw pi-check-circle', to: '/compliance' },
+            { label: 'PKI', icon: 'pi pi-fw pi-lock', to: '/pki' },
+            { label: 'Validators', icon: 'pi pi-fw pi-server', to: '/validators' },
+            { label: 'Upgrades', icon: 'pi pi-fw pi-history', to: '/upgrades' }
+        ]
+    }
+]);
 </script>
 
-
-
 <template>
-    <div class="layout-menu-container">
-        <AppSubmenu :items="model" class="layout-menu" :root="true" @menuitem-click="onMenuItemClick" @keydown="onKeyDown" />
-        <div style="position: relative; padding-top: 2rem; font-size: 0.85rem">DCL UI Version {{ this.appVersion }}</div>
-    </div>
+    <ul class="layout-menu">
+        <template v-for="(item, i) in model" :key="item">
+            <app-menu-item v-if="!item.separator" :item="item" :index="i"></app-menu-item>
+            <li v-if="item.separator" class="menu-separator"></li>
+        </template>
+    </ul>
+    <div style="position: relative; padding-top: 2rem; font-size: 0.85rem">DCL UI Version {{ this.appVersion }}</div>
 </template>
 
+<style lang="scss" scoped></style>

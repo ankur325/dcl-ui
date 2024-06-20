@@ -183,7 +183,7 @@ export default {
 </script>
 
 <style lang="scss">
-.p-toast.p-toast-top-right {
+.p-toast.p-toast--right {
     z-index: 1000;
     top: 7rem;
 }
