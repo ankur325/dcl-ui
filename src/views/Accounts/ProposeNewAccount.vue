@@ -164,7 +164,15 @@ export default {
                     <div class="field">
                         <div class="grid">
                             <div class="col-12">
-                                <Button v-if="!txProcessing" type="submit" label="Propose Add Account" icon="pi pi-user" iconPos="left" v-bind:class="[v$.$invalid ? 'p-disabled' : '']" />
+                                <Button
+                                    v-if="!txProcessing"
+                                    type="submit"
+                                    v-tooltip="'This will open keplr wallet window. Please finish the transaction there.'"
+                                    label="Propose Add Account"
+                                    icon="pi pi-user"
+                                    iconPos="left"
+                                    v-bind:class="[v$.$invalid ? 'p-disabled' : '']"
+                                />
                                 <Button v-if="txProcessing" label="Submitted Tx.." icon="pi pi-spin pi-spinner" class="p-button" disabled="disabled" iconPos="left" />
                                 <Button label="Cancel" @click="onClose" class="p-button-secondary" icon="pi pi-times" iconPos="left" />
                             </div>

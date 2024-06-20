@@ -64,9 +64,7 @@ export default {
                 return;
             }
 
-            const wallet = this.$store.getters['common/wallet/wallet'];
-            const accounts = wallet.accounts;
-            const account = wallet.accounts[0];
+            const account = this.$store.state.selectedKeplrAccount;
             const creatorAddress = account.address;
 
             //this.$store.dispatch('zigbeealliance.distributedcomplianceledger.model/sendMsgCreateModel', {
@@ -168,15 +166,17 @@ export default {
                         </div>
                     </div>
                     <div class="field">
-                        <div class="grid">
-                            <div class="col-3">
-                                <Button v-if="!txProcessing" type="submit" label="Propose Upgrade" icon="pi pi-history" iconPos="left" v-bind:class="[v$.$invalid ? 'p-disabled' : '']" />
-                                <Button v-if="txProcessing" label="Submitted Tx.." icon="pi pi-spin pi-spinner" class="p-button" disabled="disabled" iconPos="left" />
-                            </div>
-                            <div class="col-3">
-                                <Button label="Cancel" @click="onClose" class="p-button-secondary" icon="pi pi-times" iconPos="left" />
-                            </div>
-                        </div>
+                        <Button
+                            v-if="!txProcessing"
+                            v-tooltip="'This will open keplr wallet window. Please finish the transaction there.'"
+                            type="submit"
+                            label="Propose Upgrade"
+                            icon="pi pi-history"
+                            iconPos="left"
+                            v-bind:class="[v$.$invalid ? 'p-disabled' : '']"
+                        />
+                        <Button v-if="txProcessing" label="Submitted Tx.." icon="pi pi-spin pi-spinner" class="p-button" disabled="disabled" iconPos="left" />
+                        <Button label="Cancel" @click="onClose" class="p-button-secondary" icon="pi pi-times" iconPos="left" />
                     </div>
                 </div>
             </form>
