@@ -165,8 +165,6 @@ export default {
     <div class="prime-vue-container">
         <TabView>
             <TabPanel header="All Certified Models">
-                <Button @click="showCertifyModelDialog(null)" class="p-button-primary mb-4" v-bind:class="{ 'p-disabled': !isSignedIn }" label="Certify Model" />
-
                 <DataTable :value="allCertifiedModels" :auto-layout="true" :paginator="true" :rows="10" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
                     <template #header>
                         <div class="flex justify-content-end">
