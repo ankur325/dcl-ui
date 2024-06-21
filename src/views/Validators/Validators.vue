@@ -182,7 +182,7 @@ export default {
 
                     <Column field="description.moniker" header="Moniker" :sortable="true">
                         <template #body="{ data }">
-                            <a href="#" @click.prevent="showValidatorInfoDialog(data, true)"> {{ data.description.moniker }}</a>
+                            <Button :label="data.description.moniker" text @click.prevent="showValidatorInfoDialog(data, true)" />
                         </template>
                     </Column>
                     <Column field="owner" header="Owner"></Column>

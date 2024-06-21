@@ -71,7 +71,7 @@ export default {
 </script>
 
 <template>
-    <div class="prime-vue-container ml-5">
+    <div class="prime-vue-container card">
         <div class="mb-5 ml-2">
             <Button @click="showVendorInfoDialog(nil, false)" icon="pi pi-check" v-bind:class="{ 'p-disabled': !isSignedIn }" label="New Vendor">New Vendor</Button>
         </div>

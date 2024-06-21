@@ -170,7 +170,7 @@ export default {
 </script>
 
 <template>
-    <div class="prime-vue-container ml-5">
+    <div class="prime-vue-container card">
         <ConfirmDialog></ConfirmDialog>
         <Message :closable="false" v-if="error" severity="error">{{ errorMessage() }}</Message>
 
