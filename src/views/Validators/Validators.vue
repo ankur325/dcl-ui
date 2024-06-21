@@ -171,10 +171,12 @@ export default {
                 <DataTable :value="nonJailedValidators(allValidators)" :auto-layout="true" :paginator="true" :rows="20" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
                     <template #header>
                         <div class="flex justify-content-end">
-                            <span class="p-input-icon-left">
-                                <i class="pi pi-search" />
+                            <IconField>
+                                <InputIcon>
+                                    <i class="pi pi-search" />
+                                </InputIcon>
                                 <InputText v-model="filters['global'].value" placeholder="Search" />
-                            </span>
+                            </IconField>
                         </div>
                     </template>
 
@@ -204,10 +206,12 @@ export default {
                 <DataTable :value="jailedValidators(allValidators)" :auto-layout="true" :paginator="true" :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
                     <template #header>
                         <div class="flex justify-content-end">
-                            <span class="p-input-icon-left">
-                                <i class="pi pi-search" />
+                            <IconField>
+                                <InputIcon>
+                                    <i class="pi pi-search" />
+                                </InputIcon>
                                 <InputText v-model="filters['global'].value" placeholder="Search" />
-                            </span>
+                            </IconField>
                         </div>
                     </template>
 
@@ -228,10 +232,12 @@ export default {
                 <DataTable :value="allProposedDisableValidators" :auto-layout="true" :paginator="true" :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
                     <template #header>
                         <div class="flex justify-content-end">
-                            <span class="p-input-icon-left">
-                                <i class="pi pi-search" />
+                            <IconField>
+                                <InputIcon>
+                                    <i class="pi pi-search" />
+                                </InputIcon>
                                 <InputText v-model="filters['global'].value" placeholder="Search" />
-                            </span>
+                            </IconField>
                         </div>
                     </template>
                     <Column field="address" header="Address"></Column>

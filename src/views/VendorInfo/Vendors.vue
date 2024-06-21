@@ -78,10 +78,12 @@ export default {
         <DataTable :value="allVendors" :auto-layout="true" :paginator="true" :rows="10" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
             <template #header>
                 <div class="flex justify-content-end">
-                    <span class="p-input-icon-left">
-                        <i class="pi pi-search" />
+                    <IconField>
+                        <InputIcon>
+                            <i class="pi pi-search" />
+                        </InputIcon>
                         <InputText v-model="filters['global'].value" placeholder="Search" />
-                    </span>
+                    </IconField>
                 </div>
             </template>
 
