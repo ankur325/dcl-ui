@@ -4,10 +4,10 @@ import MultiSelect from 'primevue/multiselect';
 import Button from 'primevue/button';
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
-
 import { encodePubkey } from '@cosmjs/proto-signing';
 import { scrollToTopMixin } from './../../mixins/scrollToTopMixin';
 import Message from 'primevue/message';
+
 export default {
     name: 'ProposeNewAccount',
     components: {
@@ -17,7 +17,9 @@ export default {
         Message
     },
     mixins: [scrollToTopMixin],
-    setup: () => ({ v$: useVuelidate() }),
+    setup() {
+        return { v$: useVuelidate() };
+    },
     data() {
         return {
             txProcessing: false,
@@ -28,6 +30,7 @@ export default {
             pubKey: '',
             info: '',
             vendorID: '',
+            productIDs: '',
             roles: ['Vendor', 'NodeAdmin', 'VendorAdmin', 'Trustee', 'CertificationCenter']
         };
     },
@@ -39,13 +42,24 @@ export default {
             pubKey: {
                 required
             },
-
             selectedRoles: {
                 required
+            },
+            productIDs: {
+                pidRangeValidator: this.pidRangeValidator
             }
         };
     },
     methods: {
+        pidRangeValidator(value) {
+            if (!value) return true; // Allow empty values if not required
+            return value.split(',').every((range) => {
+                const parts = range.trim().split('-');
+                if (parts.length !== 2) return false;
+                const [start, end] = parts.map(Number);
+                return Number.isInteger(start) && Number.isInteger(end) && start <= end;
+            });
+        },
         handleSubmit(isFormValid) {
             this.submitted = true;
             this.error = null;
@@ -69,8 +83,6 @@ export default {
             }
             const creatorAddress = account.address;
 
-            //this.$store.dispatch('zigbeealliance.distributedcomplianceledger.model/sendMsgCreateModel', {
-
             this.txProcessing = true;
             let loader = this.$loading.show();
             let returnValue = this.$store
@@ -78,6 +90,7 @@ export default {
                     value: {
                         signer: creatorAddress,
                         vendorID: this.vendorID,
+                        productIDS: this.productIDs,
                         address: this.address,
                         pubKey: encodedBasePubkey,
                         roles: this.selectedRoles,
@@ -126,9 +139,6 @@ export default {
 };
 </script>
 
-
-
-
 <template>
     <div class="grid">
         <div class="col-12">
@@ -138,41 +148,74 @@ export default {
                 <div class="p-fluid">
                     <div class="p-grid mb-4">
                         <div class="field">
-                            <label for="address">Account Address</label>
-                            <InputText id="address" type="text" v-model="v$.address.$model" :class="{ 'p-invalid': v$.address.$invalid && submitted }" />
+                            <label for="address">
+                                <IconField v-tooltip.top="'Account address; Bech32 encoded'">
+                                    Account Address <span class="required">*</span>
+                                    <i class="pi pi-info-circle ml-2"></i>
+                                </IconField>
+                            </label>
+                            <InputText id="address" type="text" v-model="address" :class="{ 'p-invalid': v$.address.$invalid && submitted }" />
+                            <div v-if="v$.address.$invalid && submitted" class="p-error">Address is required</div>
                         </div>
                         <div class="field">
-                            <label for="pubKey">Public Key</label>
-                            <InputText id="pubKey" type="text" v-model="pubKey" />
+                            <label for="pubKey">
+                                <IconField v-tooltip.top="'Account\'s Protobuf JSON encoded public key'">
+                                    Public Key <span class="required">*</span>
+                                    <i class="pi pi-info-circle ml-2"></i>
+                                </IconField>
+                            </label>
+                            <InputText id="pubKey" type="text" v-model="pubKey" :class="{ 'p-invalid': v$.pubKey.$invalid && submitted }" />
+                            <div v-if="v$.pubKey.$invalid && submitted" class="p-error">Public Key is required</div>
                         </div>
                     </div>
                     <div class="field">
-                        <label for="info">Roles</label>
-                        <MultiSelect :options="roles" :showToggleAll="false" v-model="v$.selectedRoles.$model" :class="{ 'p-invalid': v$.selectedRoles.$invalid && submitted }" />
+                        <label for="info">
+                            <IconField v-tooltip.top="'The list of roles assigning to the account.'">
+                                Roles <span class="required">*</span>
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
+                        <MultiSelect :options="roles" :showToggleAll="false" v-model="selectedRoles" :class="{ 'p-invalid': v$.selectedRoles.$invalid && submitted }" />
+                        <div v-if="v$.selectedRoles.$invalid && submitted" class="p-error">At least one role is required</div>
                     </div>
 
                     <div class="field">
-                        <label for="vendorID">Vendor ID</label>
+                        <label for="vendorID">
+                            <IconField v-tooltip.top="'Vendor ID (only needed for vendor role)'">
+                                Vendor ID
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText id="vendorID" type="text" v-model="vendorID" />
                     </div>
 
                     <div class="field">
-                        <label for="info">Optional Information</label>
+                        <label for="productIDs">
+                            <IconField v-tooltip.top="'The list of product-id ranges (range item separated with \' - \'), comma-separated, in increasing order, associated with this account: 1-100,201-300...'">
+                                Product IDs
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
+                        <InputText id="productIDs" type="text" v-model="productIDs" :class="{ 'p-invalid': v$.productIDs.$invalid && submitted }" />
+                        <div v-if="v$.productIDs.$invalid && submitted" class="p-error">
+                            Invalid PID range format. Product IDs is the list of product-id ranges (range item separated with "-"), comma-separated, in increasing order, associated with this account: 1-100,201-300...
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="info">
+                            <IconField v-tooltip.top="'Information/notes for the proposal'">
+                                Optional Information
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText id="info" type="text" v-model="info" />
                     </div>
 
                     <div class="field">
                         <div class="grid">
                             <div class="col-12">
-                                <Button
-                                    v-if="!txProcessing"
-                                    type="submit"
-                                    v-tooltip="'This will open keplr wallet window. Please finish the transaction there.'"
-                                    label="Propose Add Account"
-                                    icon="pi pi-user"
-                                    iconPos="left"
-                                    v-bind:class="[v$.$invalid ? 'p-disabled' : '']"
-                                />
+                                <Button v-if="!txProcessing" type="submit" v-tooltip="'This will open keplr wallet window. Please finish the transaction there.'" label="Propose Add Account" icon="pi pi-user" iconPos="left" />
                                 <Button v-if="txProcessing" label="Submitted Tx.." icon="pi pi-spin pi-spinner" class="p-button" disabled="disabled" iconPos="left" />
                                 <Button label="Cancel" @click="onClose" class="p-button-secondary" icon="pi pi-times" iconPos="left" />
                             </div>
@@ -183,5 +226,3 @@ export default {
         </div>
     </div>
 </template>
-
-

@@ -180,55 +180,78 @@ export default {
                 <form @submit.prevent="handleSubmit(!v$.$invalid)" class="">
                     <!-- Field for vendorID -->
                     <div class="field">
-                        <label for="vendorID">Vendor ID <span>*</span></label>
+                        <label for="vendorID">
+                            <IconField v-tooltip.top="'Vendor ID (positive non-zero)'">
+                                Vendor ID <span class="required">*</span>
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText id="vendorID" type="text" v-model="v$.vendorID.$model" :class="{ 'p-invalid': v$.vendorID.$invalid && submitted }" />
+                        <div v-if="v$.vendorID.$invalid && submitted" class="p-error">Vendor ID is required and must be a positive non-zero number</div>
                     </div>
 
                     <!-- Field for vendorName -->
                     <div class="field">
-                        <label for="vendorName">Vendor Name <span>*</span></label>
+                        <label for="vendorName">
+                            <IconField v-tooltip.top="'Vendor name'">
+                                Vendor Name <span class="required">*</span>
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText id="vendorName" type="text" v-model="v$.vendorName.$model" :class="{ 'p-invalid': v$.vendorName.$invalid && submitted }" />
+                        <div v-if="v$.vendorName.$invalid && submitted" class="p-error">Vendor Name is required</div>
                     </div>
 
                     <!-- Field for companyLegalName -->
                     <div class="field">
-                        <label for="companyLegalName">Company Legal Name <span>*</span></label>
+                        <label for="companyLegalName">
+                            <IconField v-tooltip.top="'Legal name of the vendor company'">
+                                Company Legal Name <span class="required">*</span>
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText id="companyLegalName" type="text" v-model="v$.companyLegalName.$model" :class="{ 'p-invalid': v$.companyLegalName.$invalid && submitted }" />
+                        <div v-if="v$.companyLegalName.$invalid && submitted" class="p-error">Company Legal Name is required</div>
                     </div>
 
                     <!-- Field for companyPreferredName -->
                     <div class="field">
-                        <label for="companyPreferredName">Company Preferred Name</label>
+                        <label for="companyPreferredName">
+                            <IconField v-tooltip.top="'Preferred name of the vendor company (optional)'">
+                                Company Preferred Name
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText id="companyPreferredName" type="text" v-model="v$.companyPreferredName.$model" :class="{ 'p-invalid': v$.companyPreferredName.$invalid && submitted }" />
+                        <div v-if="v$.companyPreferredName.$invalid && submitted" class="p-error">Preferred Name is invalid</div>
                     </div>
 
                     <!-- Field for vendorLandingPageURL -->
                     <div class="field">
-                        <label for="vendorLandingPageURL">Vendor Landing Page URL</label>
+                        <label for="vendorLandingPageURL">
+                            <IconField v-tooltip.top="'URL of the vendor\'s landing page (optional)'">
+                                Vendor Landing Page URL
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText id="vendorLandingPageURL" type="text" v-model="v$.vendorLandingPageURL.$model" :class="{ 'p-invalid': v$.vendorLandingPageURL.$invalid && submitted }" />
+                        <div v-if="v$.vendorLandingPageURL.$invalid && submitted" class="p-error">Invalid URL format</div>
                     </div>
 
                     <!-- Field for schemaVersion -->
                     <div class="field">
                         <label for="schemaVersion">
-                            <IconField v-tooltip.top="'Schema version is to support backward/forward compatibility (default value is 0)'"
-                                >Schema Version
+                            <IconField v-tooltip.top="'Schema version to support backward / forward compatibility (default 0)'">
+                                Schema Version
                                 <i class="pi pi-info-circle ml-2"></i>
                             </IconField>
                         </label>
                         <InputText id="schemaVersion" type="text" v-model="v$.schemaVersion.$model" :class="{ 'p-invalid': v$.schemaVersion.$invalid && submitted }" />
+                        <div v-if="v$.schemaVersion.$invalid && submitted" class="p-error">Invalid schema version format</div>
                     </div>
 
                     <div class="field">
-                        <Button
-                            v-if="!txProcessing"
-                            type="submit"
-                            label="Save"
-                            v-tooltip="'This will open keplr wallet window. Please finish the transaction there.'"
-                            icon="pi pi-check"
-                            iconPos="left"
-                            v-bind:class="[v$.$invalid ? 'p-disabled' : '']"
-                        />
+                        <Button v-if="!txProcessing" type="submit" label="Save" v-tooltip="'This will open keplr wallet window. Please finish the transaction there.'" icon="pi pi-check" iconPos="left" />
                         <Button v-if="txProcessing" label="Submitted Tx.." disabled="disabled" icon="pi pi-spin pi-spinner" iconPos="left" />
                         <Button label="Cancel" @click="onClose" class="p-button-secondary" icon="pi pi-times" iconPos="left" />
                     </div>
