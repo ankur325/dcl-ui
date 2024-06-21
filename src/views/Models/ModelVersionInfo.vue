@@ -61,7 +61,8 @@ export default {
                     required
                 },
                 releaseNotesUrl: {},
-                creator: {}
+                creator: {},
+                schemaVersion: {}
             }
         };
     },
@@ -228,6 +229,10 @@ export default {
                     <td>{{ selectedModelVersion.releaseNotesUrl }}</td>
                 </tr>
                 <tr>
+                    <td>Schema Version</td>
+                    <td>{{ selectedModelVersion.schemaVersion }}</td>
+                </tr>
+                <tr>
                     <td>Creator</td>
                     <td>{{ selectedModelVersion.creator }}</td>
                 </tr>
@@ -239,19 +244,34 @@ export default {
                 <form @submit.prevent="handleSubmit(!v$.$invalid)" class="">
                     <!-- Field for vid -->
                     <div class="field">
-                        <label for="vid">VID <span class="required">*</span></label>
+                        <label for="vid">
+                            <IconField v-tooltip.top="'Vendor ID is a positive non-zero value'"
+                                >VID <span class="required">*</span>
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText id="vid" type="text" class="p-disabled" v-model="v$.modelVersion.vid.$model" />
                     </div>
 
                     <!-- Field for pid -->
                     <div class="field">
-                        <label for="pid">PID <span class="required">*</span></label>
+                        <label for="pid">
+                            <IconField v-tooltip.top="'Product ID is a positive non-zero value'"
+                                >PID <span class="required">*</span>
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText id="pid" type="text" class="p-disabled" v-model="v$.modelVersion.pid.$model" />
                     </div>
 
                     <!-- Field for softwareVersion -->
                     <div class="field">
-                        <label for="softwareVersion">Software Version <span class="required">*</span></label>
+                        <label for="softwareVersion">
+                            <IconField v-tooltip.top="'Model software version'"
+                                >Software Version <span class="required">*</span>
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText
                             id="softwareVersion"
                             type="text"
@@ -265,7 +285,12 @@ export default {
 
                     <!-- Field for softwareVersionString -->
                     <div class="field">
-                        <label for="softwareVersionString">Software Version String <span class="required">*</span></label>
+                        <label for="softwareVersionString">
+                            <IconField v-tooltip.top="'Model software version string'"
+                                >Software Version String <span class="required">*</span>
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText
                             id="softwareVersionString"
                             type="text"
@@ -279,7 +304,12 @@ export default {
 
                     <!-- Field for minApplicableSoftwareVersion -->
                     <div class="field">
-                        <label for="minApplicableSoftwareVersion">Min Applicable Software Version <span class="required">*</span></label>
+                        <label for="minApplicableSoftwareVersion">
+                            <IconField v-tooltip.top="'Lowest Software Version for which this image can be applied'"
+                                >Min Applicable Software Version <span class="required">*</span>
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText
                             id="minApplicableSoftwareVersion"
                             type="text"
@@ -292,7 +322,12 @@ export default {
 
                     <!-- Field for maxApplicableSoftwareVersion -->
                     <div class="field">
-                        <label for="maxApplicableSoftwareVersion">Max Applicable Software Version <span class="required">*</span></label>
+                        <label for="maxApplicableSoftwareVersion">
+                            <IconField v-tooltip.top="'Highest Software Version for which this image can be applied'"
+                                >Max Applicable Software Version <span class="required">*</span>
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText
                             id="maxApplicableSoftwareVersion"
                             type="text"
@@ -305,13 +340,23 @@ export default {
 
                     <!-- Field for cdVersionNumber -->
                     <div class="field">
-                        <label for="cdVersionNumber">CD Version Number</label>
+                        <label for="cdVersionNumber">
+                            <IconField v-tooltip.top="'CD Version Number of the certification'"
+                                >CD Version Number
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText id="cdVersionNumber" type="text" v-model="v$.modelVersion.cdVersionNumber.$model" class="p-disabled" />
                     </div>
 
                     <!-- Field for firmwareInformation -->
                     <div class="field">
-                        <label for="firmwareInformation">Firmware Information</label>
+                        <label for="firmwareInformation">
+                            <IconField v-tooltip.top="'Firmware Information field included in the Device Attestation response when this Software Image boots on the device'"
+                                >Firmware Information
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText
                             id="firmwareInformation"
                             type="text"
@@ -325,7 +370,12 @@ export default {
 
                     <!-- Field for softwareVersionValid -->
                     <div class="field">
-                        <label for="softwareVersionValid">Software Version Valid</label>
+                        <label for="softwareVersionValid">
+                            <IconField v-tooltip.top="'Flag to indicate whether the software version is valid or not (default true)'"
+                                >Software Version Valid
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <Dropdown
                             id="softwareVersionValid"
                             v-model="v$.modelVersion.softwareVersionValid.$model"
@@ -341,7 +391,12 @@ export default {
 
                     <!-- Field for otaUrl -->
                     <div class="field">
-                        <label for="otaUrl">Ota Url</label>
+                        <label for="otaUrl">
+                            <IconField v-tooltip.top="'URL where to obtain the OTA image'"
+                                >OTA URL
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText
                             id="otaUrl"
                             type="text"
@@ -354,7 +409,12 @@ export default {
 
                     <!-- Field for otaFileSize -->
                     <div class="field">
-                        <label for="otaFileSize">Ota File Size</label>
+                        <label for="otaFileSize">
+                            <IconField v-tooltip.top="'Total size of the OTA software image in bytes'"
+                                >OTA File Size
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText
                             id="otaFileSize"
                             type="text"
@@ -368,7 +428,12 @@ export default {
 
                     <!-- Field for otaChecksum -->
                     <div class="field">
-                        <label for="otaChecksum">Ota Checksum</label>
+                        <label for="otaChecksum">
+                            <IconField v-tooltip.top="'Digest of the entire contents of the associated OTA Software Update Image under the OtaUrl attribute, encoded in base64 string representation'"
+                                >OTA Checksum
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText
                             id="otaChecksum"
                             type="text"
@@ -382,7 +447,15 @@ export default {
 
                     <!-- Field for otaChecksumType -->
                     <div class="field">
-                        <label for="otaChecksumType">Ota Checksum Type</label>
+                        <label for="otaChecksumType">
+                            <IconField
+                                v-tooltip.top="
+                                    'Numeric identifier as defined in IANA Named Information Hash Algorithm Registry for the type of otaChecksum. For example, a value of 1 would match the sha-256 identifier, which maps to the SHA-256 digest algorithm'
+                                "
+                                >OTA Checksum Type
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText
                             id="otaChecksumType"
                             type="text"
@@ -396,7 +469,12 @@ export default {
 
                     <!-- Field for releaseNotesUrl -->
                     <div class="field">
-                        <label for="releaseNotesUrl">Release Notes Url</label>
+                        <label for="releaseNotesUrl">
+                            <IconField v-tooltip.top="'URL that contains product-specific web page with release notes for the device model'"
+                                >Release Notes URL
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
                         <InputText
                             id="releaseNotesUrl"
                             type="text"
@@ -407,16 +485,37 @@ export default {
                         />
                     </div>
 
+                    <!-- Field for schemaVersion -->
                     <div class="field">
-                        <div class="grid">
-                            <div class="col-3">
-                                <Button class="p-button-primary" v-if="!txProcessing" type="submit" label="Save" icon="pi pi-save" iconPos="left" v-bind:class="[v$.$invalid ? 'p-disabled' : '']" />
-                                <Button class="p-button-primary" v-if="txProcessing" label="Submitted Tx.." disabled="disabled" icon="pi pi-spin pi-spinner" iconPos="left" />
-                            </div>
-                            <div class="col-3">
-                                <Button label="Cancel" @click="onClose" class="p-button-secondary" icon="pi pi-times" iconPos="left" />
-                            </div>
-                        </div>
+                        <label for="schemaVersion">
+                            <IconField v-tooltip.top="'Schema version to support backward/forward compatibility (default 0)'"
+                                >Schema Version
+                                <i class="pi pi-info-circle ml-2"></i>
+                            </IconField>
+                        </label>
+                        <InputText
+                            id="schemaVersion"
+                            type="text"
+                            v-model="v$.modelVersion.schemaVersion.$model"
+                            :class="{
+                                'p-invalid': v$.modelVersion.schemaVersion.$invalid && submitted
+                            }"
+                        />
+                    </div>
+
+                    <div class="field">
+                        <Button
+                            class="p-button-primary"
+                            v-tooltip="'This will open keplr wallet window. Please finish the transaction there.'"
+                            v-if="!txProcessing"
+                            type="submit"
+                            label="Save"
+                            icon="pi pi-save"
+                            iconPos="left"
+                            v-bind:class="[v$.$invalid ? 'p-disabled' : '']"
+                        />
+                        <Button class="p-button-primary" v-if="txProcessing" label="Submitted Tx.." disabled="disabled" icon="pi pi-spin pi-spinner" iconPos="left" />
+                        <Button label="Cancel" @click="onClose" class="p-button-secondary" icon="pi pi-times" iconPos="left" />
                     </div>
                 </form>
             </div>
