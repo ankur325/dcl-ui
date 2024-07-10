@@ -86,6 +86,7 @@ export default {
                     item.approvals = item.certs[0].approvals;
                     item.serialNumber = item.certs[0].serialNumber;
                     item.subjectAsText = item.certs[0].subjectAsText;
+                    item.vid = item.certs[0].vid ? item.certs[0].vid + ' (0x' + item.certs[0].vid.toString(16) + ")" : 'Not Set';
                     return item;
                 });
             }
@@ -280,6 +281,9 @@ export default {
                     return 'Approve Revoke X509 Root Certificate';
                 case 'RevokeX509Cert':
                     return 'Revoke a X509 Certificate';
+                case 'AssignVid':
+                    return 'Assign Vendor ID to X509 Root Certificate';
+
                 default:
                     return 'Grant Action Failed';
             }
@@ -388,10 +392,14 @@ export default {
         <Message :closable="false" v-if="error" severity="error">{{ errorMessage() }}</Message>
         <TabView>
             <TabPanel header="All Approved Certificates">
-                <Button @click="showProposeRootCertificateDialog" class="p-button-primary mb-4 mr-4" v-bind:class="{ 'p-disabled': !isSignedIn }" label="Propose Root Certificate" />
-                <Button @click="showAddLeafCertificateDialog" class="p-button-primary mb-4" v-bind:class="{ 'p-disabled': !isSignedIn }" label="Add Leaf Certificate" />
+                <Button @click="showProposeRootCertificateDialog" class="p-button-primary mb-4 mr-4"
+                    v-bind:class="{ 'p-disabled': !isSignedIn }" label="Propose Root Certificate" />
+                <Button @click="showAddLeafCertificateDialog" class="p-button-primary mb-4"
+                    v-bind:class="{ 'p-disabled': !isSignedIn }" label="Add Leaf Certificate" />
 
-                <DataTable :value="allApprovedRootCertificates" :auto-layout="true" :paginator="true" :rows="10" v-model:filters="filters" v-model:expandedRows="expandedRows" filterDisplay="row" showGridlines stripedRows>
+                <DataTable :value="allApprovedRootCertificates" :auto-layout="true" :paginator="true" :rows="10"
+                    v-model:filters="filters" v-model:expandedRows="expandedRows" filterDisplay="row" showGridlines
+                    stripedRows>
                     <template #header>
                         <div class="flex justify-content-end">
                             <IconField>
@@ -404,7 +412,7 @@ export default {
                     </template>
 
                     <Column :expander="true" headerStyle="width: 3rem" />
-
+                    <Column field="vid" header="Vendor ID" :sortable="true" />
                     <Column field="subjectAsText" header="Subject" :sortable="true" />
                     <Column field="subjectKeyId" header="Subject Key ID"></Column>
                     <Column field="approvals" header="Approvals">
@@ -418,25 +426,40 @@ export default {
                             </ol>
                         </template>
                     </Column>
-                    <Column headerStyle="width: 4rem; text-align: center" bodyStyle="text-align: center; overflow: visible">
+                    <Column headerStyle="width: 4rem; text-align: center"
+                        bodyStyle="text-align: center; overflow: visible">
                         <template #body="{ data }">
-                            <Button label="Propose Revoke" class="p-button-danger" @click="showGrantActionRootCertificateDialog(data, 'ProposeRevokeX509RootCert')" iconPos="left" icon="pi pi-ban" v-bind:class="{ 'p-disabled': !isSignedIn }"></Button>
+                            <Button label="Assign Vendor ID" class="p-button-primary"
+                                @click="showGrantActionRootCertificateDialog(data, 'AssignVid')" iconPos="left"
+                                icon="pi pi-user" v-bind:class="{ 'p-disabled': !isSignedIn }"
+                                v-if="data.vid == 'Not Set'">
+                            </Button>
                             <br />
-                            <Button label="Download" class="p-button-success mt-3" icon="pi pi-download" @click="downloadCertificate(data)"></Button>
+                            <Button label="Propose Revoke" class="p-button-danger mt-3"
+                                @click="showGrantActionRootCertificateDialog(data, 'ProposeRevokeX509RootCert')"
+                                iconPos="left" icon="pi pi-ban" v-bind:class="{ 'p-disabled': !isSignedIn }"></Button>
+                            <br />
+                            <Button label="Download" class="p-button-success mt-3" icon="pi pi-download"
+                                @click="downloadCertificate(data)"></Button>
                         </template>
                     </Column>
                     <template #expansion="certificate">
                         <div>
-                            <LeafCertificates :subject="certificate.data.subject" :subjectKeyId="certificate.data.subjectKeyId"> </LeafCertificates>
+                            <LeafCertificates :subject="certificate.data.subject"
+                                :subjectKeyId="certificate.data.subjectKeyId"> </LeafCertificates>
                         </div>
                     </template>
                 </DataTable>
             </TabPanel>
 
             <TabPanel header="PKI Revocation Distribution Point">
-                <Button @click="showPkiRevocationDistributionPointDialog(null, false)" class="p-button-primary mb-4 mr-4" v-bind:class="{ 'p-disabled': !isSignedIn }" label="Add Revocation Distribution Point" />
+                <Button @click="showPkiRevocationDistributionPointDialog(null, false)"
+                    class="p-button-primary mb-4 mr-4" v-bind:class="{ 'p-disabled': !isSignedIn }"
+                    label="Add Revocation Distribution Point" />
 
-                <DataTable :value="allPkiRevocationDistributionPoints" :auto-layout="true" :paginator="true" :rows="10" v-model:filters="filters" v-model:expandedRows="expandedRows" filterDisplay="row" showGridlines stripedRows>
+                <DataTable :value="allPkiRevocationDistributionPoints" :auto-layout="true" :paginator="true" :rows="10"
+                    v-model:filters="filters" v-model:expandedRows="expandedRows" filterDisplay="row" showGridlines
+                    stripedRows>
                     <template #header>
                         <div class="flex justify-content-end">
                             <IconField>
@@ -454,36 +477,24 @@ export default {
                     <Column header="Action">
                         <template #body="{ data }">
                             <span style="margin-right: 0.1rem">
-                                <Button
-                                    label=""
-                                    @click="showPkiRevocationDistributionPointDialog(data, true)"
-                                    iconPos="left"
-                                    icon="pi pi-info-circle"
+                                <Button label="" @click="showPkiRevocationDistributionPointDialog(data, true)"
+                                    iconPos="left" icon="pi pi-info-circle"
                                     class="p-button-rounded p-button-primary p-button-text p-button-info"
-                                    v-tooltip="'Show PKI Revocation Distribution Point'"
-                                />
+                                    v-tooltip="'Show PKI Revocation Distribution Point'" />
                             </span>
                             <span style="margin-right: 0.1rem">
-                                <Button
-                                    label=""
-                                    @click="showPkiRevocationDistributionPointDialog(data, false)"
-                                    iconPos="left"
-                                    icon="pi pi-pencil"
+                                <Button label="" @click="showPkiRevocationDistributionPointDialog(data, false)"
+                                    iconPos="left" icon="pi pi-pencil"
                                     class="p-button-rounded p-button-secondary p-button-text"
                                     v-bind:class="{ 'p-disabled': !isSignedIn }"
-                                    v-tooltip="'Update PKI Revocation Distribution Point'"
-                                />
+                                    v-tooltip="'Update PKI Revocation Distribution Point'" />
                             </span>
                             <span style="margin-right: 0.1rem">
-                                <Button
-                                    label=""
-                                    @click="confirmDeletePkiRevocationDistributionPoint(data)"
-                                    iconPos="left"
-                                    icon="pi pi-trash"
+                                <Button label="" @click="confirmDeletePkiRevocationDistributionPoint(data)"
+                                    iconPos="left" icon="pi pi-trash"
                                     class="p-button-rounded p-button-danger p-button-text"
                                     v-bind:class="{ 'p-disabled': !isSignedIn }"
-                                    v-tooltip="'Delete PKI Revocation Distribution Point'"
-                                />
+                                    v-tooltip="'Delete PKI Revocation Distribution Point'" />
                             </span>
                         </template>
                     </Column>
@@ -491,7 +502,8 @@ export default {
             </TabPanel>
 
             <TabPanel header="All Proposed Certificates">
-                <DataTable :value="allProposedCertificates" :auto-layout="true" :paginator="true" :rows="10" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
+                <DataTable :value="allProposedCertificates" :auto-layout="true" :paginator="true" :rows="10"
+                    v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
                     <template #header>
                         <div class="flex justify-content-end">
                             <IconField>
@@ -528,22 +540,29 @@ export default {
                             </ol>
                         </template>
                     </Column>
-                    <Column headerStyle="width: 4rem; text-align: center" bodyStyle="text-align: left; overflow: visible">
+                    <Column headerStyle="width: 4rem; text-align: center"
+                        bodyStyle="text-align: left; overflow: visible">
                         <template #body="{ data }">
-                            <Button label="Approve" class="p-button-primary" @click="showGrantActionRootCertificateDialog(data, 'ApproveAddX509RootCert')" iconPos="left" icon="pi pi-check" v-bind:class="{ 'p-disabled': !isSignedIn }"></Button>
+                            <Button label="Approve" class="p-button-primary"
+                                @click="showGrantActionRootCertificateDialog(data, 'ApproveAddX509RootCert')"
+                                iconPos="left" icon="pi pi-check" v-bind:class="{ 'p-disabled': !isSignedIn }"></Button>
                             <br />
 
-                            <Button label="Reject" class="mt-3 p-button-danger" @click="showGrantActionRootCertificateDialog(data, 'RejectAddX509RootCert')" iconPos="left" icon="pi pi-ban" v-bind:class="{ 'p-disabled': !isSignedIn }"></Button>
+                            <Button label="Reject" class="mt-3 p-button-danger"
+                                @click="showGrantActionRootCertificateDialog(data, 'RejectAddX509RootCert')"
+                                iconPos="left" icon="pi pi-ban" v-bind:class="{ 'p-disabled': !isSignedIn }"></Button>
                             <br />
 
-                            <Button label="Download" class="p-button-success mt-3" icon="pi pi-download" @click="downloadCertificate(data)"></Button>
+                            <Button label="Download" class="p-button-success mt-3" icon="pi pi-download"
+                                @click="downloadCertificate(data)"></Button>
                         </template>
                     </Column>
                 </DataTable>
             </TabPanel>
 
             <TabPanel header="All Proposed Revoked Certificates">
-                <DataTable :value="allProposedCertificateRevocation" :auto-layout="true" :paginator="true" :rows="10" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
+                <DataTable :value="allProposedCertificateRevocation" :auto-layout="true" :paginator="true" :rows="10"
+                    v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
                     <template #header>
                         <div class="flex justify-content-end">
                             <IconField>
@@ -567,16 +586,20 @@ export default {
                             </ol>
                         </template>
                     </Column>
-                    <Column headerStyle="width: 4rem; text-align: center" bodyStyle="text-align: center; overflow: visible">
+                    <Column headerStyle="width: 4rem; text-align: center"
+                        bodyStyle="text-align: center; overflow: visible">
                         <template #body="{ data }">
-                            <Button label="Revoke" class="p-button-danger" @click="showGrantActionRootCertificateDialog(data, 'ApproveRevokeX509RootCert')" iconPos="left" icon="pi pi-ban" v-bind:class="{ 'p-disabled': !isSignedIn }" />
+                            <Button label="Revoke" class="p-button-danger"
+                                @click="showGrantActionRootCertificateDialog(data, 'ApproveRevokeX509RootCert')"
+                                iconPos="left" icon="pi pi-ban" v-bind:class="{ 'p-disabled': !isSignedIn }" />
                         </template>
                     </Column>
                 </DataTable>
             </TabPanel>
 
             <TabPanel header="All Revoked Certificates">
-                <DataTable :value="allRevokedCertificates" :auto-layout="true" :paginator="true" :rows="10" v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
+                <DataTable :value="allRevokedCertificates" :auto-layout="true" :paginator="true" :rows="10"
+                    v-model:filters="filters" filterDisplay="row" showGridlines stripedRows>
                     <template #header>
                         <div class="flex justify-content-end">
                             <IconField>
@@ -604,25 +627,30 @@ export default {
             </TabPanel>
         </TabView>
 
-        <Dialog header="Propose X-509 Root Certificate" @update:visible="dismissProposeRootCertificateDialog" :visible="showProposeRootCert" :style="{ width: '50vw' }" class="p-fluid" :modal="true">
-            <ProposeRootCertificate :action="action" :certificate="selectedCertificate" @close-dialog="dismissProposeRootCertificateDialog"></ProposeRootCertificate>
+        <Dialog header="Propose X-509 Root Certificate" @update:visible="dismissProposeRootCertificateDialog"
+            :visible="showProposeRootCert" :style="{ width: '50vw' }" class="p-fluid" :modal="true">
+            <ProposeRootCertificate :action="action" :certificate="selectedCertificate"
+                @close-dialog="dismissProposeRootCertificateDialog"></ProposeRootCertificate>
         </Dialog>
 
-        <Dialog header="Add X-509 Certificate" @update:visible="dismissAddLeafCertificateDialog" :visible="showAddLeafCert" :style="{ width: '50vw' }" class="p-fluid" :modal="true">
-            <AddLeafCertificate :action="action" :certificate="selectedCertificate" @close-dialog="dismissAddLeafCertificateDialog"></AddLeafCertificate>
+        <Dialog header="Add X-509 Certificate" @update:visible="dismissAddLeafCertificateDialog"
+            :visible="showAddLeafCert" :style="{ width: '50vw' }" class="p-fluid" :modal="true">
+            <AddLeafCertificate :action="action" :certificate="selectedCertificate"
+                @close-dialog="dismissAddLeafCertificateDialog"></AddLeafCertificate>
         </Dialog>
 
-        <Dialog :header="grantActionHeader()" @update:visible="dismissGrantActionRootCertificateDialog" :visible="showGrantActionRootCert" :style="{ width: '50vw' }" class="p-fluid" :modal="true">
-            <GrantActionRootCertificate :action="action" :certificate="selectedCertificate" @close-dialog="dismissGrantActionRootCertificateDialog"></GrantActionRootCertificate>
+        <Dialog :header="grantActionHeader()" @update:visible="dismissGrantActionRootCertificateDialog"
+            :visible="showGrantActionRootCert" :style="{ width: '50vw' }" class="p-fluid" :modal="true">
+            <GrantActionRootCertificate :action="action" :certificate="selectedCertificate"
+                @close-dialog="dismissGrantActionRootCertificateDialog"></GrantActionRootCertificate>
         </Dialog>
 
-        <Dialog :header="pkiRevocationDistributionPointHeader()" @update:visible="dismissPkiRevocationDistributionPointDialog" :visible="showPkiRevocationDistributionPoint" :style="{ width: '50vw' }" class="p-fluid" :modal="true">
-            <PkiRevocationDistributionPoint
-                :action="action"
-                :selectedPkiRevocationDistributionPoint="selectedPkiRevocationDistributionPoint"
-                :viewOnly="viewOnly"
-                @close-dialog="dismissPkiRevocationDistributionPointDialog"
-            ></PkiRevocationDistributionPoint>
+        <Dialog :header="pkiRevocationDistributionPointHeader()"
+            @update:visible="dismissPkiRevocationDistributionPointDialog" :visible="showPkiRevocationDistributionPoint"
+            :style="{ width: '50vw' }" class="p-fluid" :modal="true">
+            <PkiRevocationDistributionPoint :action="action"
+                :selectedPkiRevocationDistributionPoint="selectedPkiRevocationDistributionPoint" :viewOnly="viewOnly"
+                @close-dialog="dismissPkiRevocationDistributionPointDialog"></PkiRevocationDistributionPoint>
         </Dialog>
     </div>
 </template>
