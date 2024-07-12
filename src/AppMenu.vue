@@ -24,7 +24,8 @@ menu: [
             { label: 'Compliance', icon: 'pi pi-fw pi-check-circle', to: '/compliance' },
             { label: 'PKI', icon: 'pi pi-fw pi-lock', to: '/pki' },
             { label: 'Validators', icon: 'pi pi-fw pi-server', to: '/validators' },
-            { label: 'Upgrades', icon: 'pi pi-fw pi-history', to: '/upgrades' }
+            { label: 'Upgrades', icon: 'pi pi-fw pi-history', to: '/upgrades' },
+            { label: 'Legacy Wallet', icon: 'pi pi-fw pi-wallet', to: '/legacy-wallet' }
         ]
     }
 ];
@@ -44,7 +45,8 @@ const model = ref([
             { label: 'Compliance', icon: 'pi pi-fw pi-check-circle', to: '/compliance' },
             { label: 'PKI', icon: 'pi pi-fw pi-lock', to: '/pki' },
             { label: 'Validators', icon: 'pi pi-fw pi-server', to: '/validators' },
-            { label: 'Upgrades', icon: 'pi pi-fw pi-history', to: '/upgrades' }
+            { label: 'Upgrades', icon: 'pi pi-fw pi-history', to: '/upgrades' },
+            { label: 'Legacy Wallet', icon: 'pi pi-fw pi-wallet', to: '/legacy-wallet' }
         ]
     }
 ]);
@@ -57,7 +59,7 @@ const model = ref([
             <li v-if="item.separator" class="menu-separator"></li>
         </template>
     </ul>
-    <div style="position: relative; padding-top: 2rem; font-size: 0.85rem">DCL UI Version {{ this.appVersion }}</div>
+    <div style="position: relative; padding-top: 2rem; font-size: 0.85rem">DCL UI Version {{ this.appVersion || 'local-development' }}</div>
 </template>
 
 <style lang="scss" scoped></style>

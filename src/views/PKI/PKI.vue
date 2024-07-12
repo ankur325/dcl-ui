@@ -4,12 +4,15 @@ import Column from 'primevue/column';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Button from 'primevue/button';
+import ButtonGroup from 'primevue/buttongroup';
 import SplitButton from 'primevue/splitbutton';
 import Dialog from 'primevue/dialog';
 import ProposeRootCertificate from './ProposeRootCertificate.vue';
+import AddRootNocCertificate from './AddRootNocCertificate.vue';
 import GrantActionRootCertificate from './GrantActionRootCertificate.vue';
 import PkiRevocationDistributionPoint from './PkiRevocationDistributionPoint.vue';
 import AddLeafCertificate from './AddLeafCertificate.vue';
+import AddNocIcaCertificate from './AddNocIcaCertificate.vue';
 import LeafCertificates from './LeafCertificates.vue';
 import { FilterMatchMode } from 'primevue/api';
 
@@ -19,10 +22,12 @@ export default {
         return {
             showGrantActionRootCert: false,
             showProposeRootCert: false,
+            showAddNocRootCert: false,
             showPkiRevocationDistributionPoint: false,
             selectedPkiRevocationDistributionPoint: null,
             viewOnly: false,
             showAddLeafCert: false,
+            showAddNocLeafCert: false,
             action: null,
             expandedRows: [],
             filters: {
@@ -64,11 +69,14 @@ export default {
         TabView,
         TabPanel,
         Button,
+        ButtonGroup,
         SplitButton,
         Dialog,
         GrantActionRootCertificate,
         ProposeRootCertificate,
+        AddRootNocCertificate,
         AddLeafCertificate,
+        AddNocIcaCertificate,
         LeafCertificates,
         PkiRevocationDistributionPoint
     },
@@ -87,6 +95,7 @@ export default {
                     item.serialNumber = item.certs[0].serialNumber;
                     item.subjectAsText = item.certs[0].subjectAsText;
                     item.vid = item.certs[0].vid ? item.certs[0].vid + ' (0x' + item.certs[0].vid.toString(16) + ")" : 'Not Set';
+                    item.isNoc = item.certs[0].isNoc ? 'Yes' : 'No';
                     return item;
                 });
             }
@@ -149,6 +158,8 @@ export default {
                     item.approvals = item.certs[0].approvals;
                     item.serialNumber = item.certs[0].serialNumber;
                     item.subjectAsText = item.certs[0].subjectAsText;
+                    item.isNoc = item.certs[0].isNoc;
+                    item.isRoot = item.certs[0].isRoot;
                     return item;
                 });
             }
@@ -203,6 +214,23 @@ export default {
     },
 
     methods: {
+
+        showCertificateDialog(type) {
+            switch(type) {
+                case 'propose-root':
+                this.showProposeRootCertificateDialog();
+                break;
+                case 'add-noc-root':
+                this.showAddNocRootCertificateDialog();
+                break;
+                case 'add-leaf':
+                this.showAddLeafCertificateDialog();
+                break;
+                case 'add-noc-ica':
+                this.showAddNocIcaCertificateDialog();
+                break;
+            }
+        },        
         dismissPkiRevocationDistributionPointDialog() {
             this.showPkiRevocationDistributionPoint = false;
         },
@@ -246,8 +274,17 @@ export default {
         showProposeRootCertificateDialog() {
             this.showProposeRootCert = true;
         },
+
         dismissProposeRootCertificateDialog() {
             this.showProposeRootCert = false;
+        },
+
+        showAddNocRootCertificateDialog() {
+            this.showAddNocRootCert = true;
+        },
+
+        dismissAddNocRootCertificateDialog() {
+            this.showAddNocRootCert = false;
         },
 
         showAddLeafCertificateDialog() {
@@ -255,6 +292,13 @@ export default {
         },
         dismissAddLeafCertificateDialog() {
             this.showAddLeafCert = false;
+        },
+
+        showAddNocIcaCertificateDialog() {
+            this.showAddNocLeafCert = true;
+        },
+        dismissAddNocIcaCertificateDialog() {
+            this.showAddNocLeafCert = false;
         },
 
         showGrantActionRootCertificateDialog(certificate, action) {
@@ -283,6 +327,14 @@ export default {
                     return 'Revoke a X509 Certificate';
                 case 'AssignVid':
                     return 'Assign Vendor ID to X509 Root Certificate';
+                case 'RevokeNocX509IcaCert':
+                    return 'Revoke NOC X509 ICA Certificate';
+                case 'RemoveNocX509IcaCert':
+                    return 'Remove NOC X509 ICA Certificate';
+                case 'RevokeNocX509RootCert':
+                    return 'Revoke NOC X509 Root Certificate';
+                case 'RemoveNocX509RootCert':
+                    return 'Remove NOC X509 Root Certificate';
 
                 default:
                     return 'Grant Action Failed';
@@ -388,17 +440,42 @@ export default {
 
 <template>
     <div class="prime-vue-container">
+        <div class="certificate-actions">
+                    <Button @click="showCertificateDialog('propose-root')" 
+                            :disabled="!isSignedIn"
+                            icon="pi pi-plus-circle"
+                            label="Propose Root Cert"
+                            class="mr-3 p-button-primary"
+                            v-tooltip.top="'Propose a new root certificate'"
+                    />
+                    <Button @click="showCertificateDialog('add-leaf')"
+                            :disabled="!isSignedIn"
+                            icon="pi pi-file"
+                            label="Add Leaf Cert"
+                            class="mr-3 p-button-primary"
+                            v-tooltip.top="'Add a new leaf certificate'"
+                    />
+                    <Button @click="showCertificateDialog('add-noc-root')"
+                            :disabled="!isSignedIn"
+                            icon="pi pi-sitemap"
+                            label="Add NOC Root Cert"
+                            class="mr-3 p-button-primary"
+                            v-tooltip.top="'Add a new NOC root certificate'"
+                    />
+                    <Button @click="showCertificateDialog('add-noc-ica')"
+                            :disabled="!isSignedIn"
+                            icon="pi pi-server"
+                            label="Add NOC ICA Cert"
+                            class="p-button-primary"
+                            v-tooltip.top="'Add a new NOC ICA certificate'"
+                    />
+        </div>        
         <ConfirmDialog></ConfirmDialog>
         <Message :closable="false" v-if="error" severity="error">{{ errorMessage() }}</Message>
         <TabView>
             <TabPanel header="All Approved Certificates">
-                <Button @click="showProposeRootCertificateDialog" class="p-button-primary mb-4 mr-4"
-                    v-bind:class="{ 'p-disabled': !isSignedIn }" label="Propose Root Certificate" />
-                <Button @click="showAddLeafCertificateDialog" class="p-button-primary mb-4"
-                    v-bind:class="{ 'p-disabled': !isSignedIn }" label="Add Leaf Certificate" />
-
-                <DataTable :value="allApprovedRootCertificates" :auto-layout="true" :paginator="true" :rows="10"
-                    v-model:filters="filters" v-model:expandedRows="expandedRows" filterDisplay="row" showGridlines
+                <DataTable responsiveLayout="stack" :value="allApprovedRootCertificates" :auto-layout="true" :paginator="true" :rows="10"
+                    v-model:filters="filters" v-model:expandedRows="expandedRows" filterDisplay="row" showGridlines :tableStyle="{ minWidth: '50rem' }"
                     stripedRows>
                     <template #header>
                         <div class="flex justify-content-end">
@@ -413,6 +490,7 @@ export default {
 
                     <Column :expander="true" headerStyle="width: 3rem" />
                     <Column field="vid" header="Vendor ID" :sortable="true" />
+                    <Column field="isNoc" header="Noc" :sortable="true" />
                     <Column field="subjectAsText" header="Subject" :sortable="true" />
                     <Column field="subjectKeyId" header="Subject Key ID"></Column>
                     <Column field="approvals" header="Approvals">
@@ -423,6 +501,7 @@ export default {
                                     Time : {{ new Date(approval.time * 1000).toString() }} <br />
                                     Info : {{ approval.info }}
                                 </li>
+                                
                             </ol>
                         </template>
                     </Column>
@@ -437,7 +516,23 @@ export default {
                             <br />
                             <Button label="Propose Revoke" class="p-button-danger mt-3"
                                 @click="showGrantActionRootCertificateDialog(data, 'ProposeRevokeX509RootCert')"
-                                iconPos="left" icon="pi pi-ban" v-bind:class="{ 'p-disabled': !isSignedIn }"></Button>
+                                iconPos="left" icon="pi pi-ban" v-bind:class="{ 'p-disabled': !isSignedIn }"
+                                v-if="data.isNoc == 'No'">
+                            </Button>
+
+                            <Button label="Revoke NOC" class="p-button-warning mt-3"
+                                @click="showGrantActionRootCertificateDialog(data, 'RevokeNocX509RootCert')"
+                                iconPos="left" icon="pi pi-ban" v-bind:class="{ 'p-disabled': !isSignedIn }"
+                                v-if="data.isNoc == 'Yes'">
+                            </Button>
+                            
+                            <Button label="Remove NOC" class="p-button-danger mt-3"
+                                @click="showGrantActionRootCertificateDialog(data, 'RemoveNocX509RootCert')"
+                                iconPos="left" icon="pi pi-trash" v-bind:class="{ 'p-disabled': !isSignedIn }"
+                                v-if="data.isNoc == 'Yes'">
+                            </Button>
+
+
                             <br />
                             <Button label="Download" class="p-button-success mt-3" icon="pi pi-download"
                                 @click="downloadCertificate(data)"></Button>
@@ -623,6 +718,19 @@ export default {
                             </ol>
                         </template>
                     </Column>
+                    <Column headerStyle="width: 4rem; text-align: center"
+                        bodyStyle="text-align: center; overflow: visible">
+                        <template #body="{ data }">
+                            <Button v-if="data.isNoc == true && data.isRoot == true" label="Remove" class="p-button-danger"
+                                @click="showGrantActionRootCertificateDialog(data, 'RemoveNocX509RootCert')"
+                                iconPos="left" icon="pi pi-ban" v-bind:class="{ 'p-disabled': !isSignedIn }" />
+
+                            <Button v-if="data.isNoc == true && data.isRoot == false" label="Remove" class="p-button-danger"
+                                @click="showGrantActionRootCertificateDialog(data, 'RemoveNocX509IcaCert')"
+                                iconPos="left" icon="pi pi-ban" v-bind:class="{ 'p-disabled': !isSignedIn }" />
+
+                        </template>
+                    </Column>                    
                 </DataTable>
             </TabPanel>
         </TabView>
@@ -633,10 +741,22 @@ export default {
                 @close-dialog="dismissProposeRootCertificateDialog"></ProposeRootCertificate>
         </Dialog>
 
+        <Dialog header="Add NOC X-509 Root Certificate" @update:visible="dismissAddNocRootCertificateDialog"
+            :visible="showAddNocRootCert" :style="{ width: '50vw' }" class="p-fluid" :modal="true">
+            <AddRootNocCertificate :action="action" :certificate="selectedCertificate"
+                @close-dialog="dismissAddNocRootCertificateDialog"></AddRootNocCertificate>
+        </Dialog>
+
         <Dialog header="Add X-509 Certificate" @update:visible="dismissAddLeafCertificateDialog"
             :visible="showAddLeafCert" :style="{ width: '50vw' }" class="p-fluid" :modal="true">
             <AddLeafCertificate :action="action" :certificate="selectedCertificate"
                 @close-dialog="dismissAddLeafCertificateDialog"></AddLeafCertificate>
+        </Dialog>
+
+        <Dialog header="Add Noc ICA Certificate" @update:visible="dismissAddNocIcaCertificateDialog"
+            :visible="showAddNocLeafCert" :style="{ width: '50vw' }" class="p-fluid" :modal="true">
+            <AddNocIcaCertificate :action="action" :certificate="selectedCertificate"
+                @close-dialog="dismissAddNocIcaCertificateDialog"></AddNocIcaCertificate>
         </Dialog>
 
         <Dialog :header="grantActionHeader()" @update:visible="dismissGrantActionRootCertificateDialog"
@@ -655,7 +775,7 @@ export default {
     </div>
 </template>
 
-<style>
+<style scoped>
 td.subject {
     max-width: 400px;
     text-overflow: ellipsis;
@@ -664,5 +784,38 @@ td.subject {
 
 .p-splitbutton {
     margin-right: 0.5rem;
+}
+
+.certificate-actions {
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .certificate-actions .p-buttongroup {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .certificate-actions .p-buttongroup .p-button {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.truncate-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+@media screen and (max-width: 960px) {
+  ::v-deep(.p-datatable-tbody > tr > td:last-child) {
+    text-align: center;
+  }
+  
+  ::v-deep(.p-datatable .p-datatable-tbody > tr > td .p-column-title) {
+    display: inline-block;
+    font-weight: bold;
+  }
 }
 </style>
