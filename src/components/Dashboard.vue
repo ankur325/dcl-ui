@@ -276,40 +276,6 @@ export default {
             pubKey: null,
             loadValues: {},
             nodeInfo: {},
-            queries: [
-                {
-                    namespace: 'zigbeealliance.distributedcomplianceledger.model',
-                    method: 'QueryModelAll'
-                },
-                {
-                    namespace: 'zigbeealliance.distributedcomplianceledger.dclauth',
-                    method: 'QueryAccountAll'
-                },
-                {
-                    namespace: 'zigbeealliance.distributedcomplianceledger.dclauth',
-                    method: 'QueryPendingAccountAll'
-                },
-                {
-                    namespace: 'zigbeealliance.distributedcomplianceledger.dclauth',
-                    method: 'QueryPendingAccountRevocationAll'
-                },
-                {
-                    namespace: 'zigbeealliance.distributedcomplianceledger.validator',
-                    method: 'QueryValidatorAll'
-                },
-                {
-                    namespace: 'zigbeealliance.distributedcomplianceledger.compliance',
-                    method: 'QueryCertifiedModelAll'
-                },
-                {
-                    namespace: 'zigbeealliance.distributedcomplianceledger.pki',
-                    method: 'QueryApprovedCertificatesAll'
-                },
-                {
-                    namespace: 'zigbeealliance.distributedcomplianceledger.vendorinfo',
-                    method: 'QueryVendorInfoAll'
-                }
-            ]
         };
     },
     watch: {},
@@ -330,21 +296,8 @@ export default {
             .catch((error) => {
                 console.error('Error fetching node info:', error);
             });            
-
-        this.queries.forEach((query) => {
-            this.$store.dispatch(`${query.namespace}/${query.method}`, {
-                options: {
-                    subscribe: true,
-                    all: true
-                }
-            });
-        });
     },
     computed: {
-        isTestnetOrLocalhost() {
-            const currentHref = window.location.href;
-            return currentHref.includes('testnet.iotledger.io') || currentHref.includes('localhost');
-        },
 
         currentKey: {
             get() {

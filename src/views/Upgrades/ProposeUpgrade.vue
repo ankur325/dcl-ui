@@ -67,8 +67,6 @@ export default {
             const account = this.$store.state.selectedKeplrAccount;
             const creatorAddress = account.address;
 
-            //this.$store.dispatch('zigbeealliance.distributedcomplianceledger.model/sendMsgCreateModel', {
-
             this.txProcessing = true;
             let loader = this.$loading.show();
             let returnValue = this.$store

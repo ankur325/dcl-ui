@@ -99,11 +99,6 @@ export default {
         GrantActionRootCertificate
     },
 
-    created() {
-        this.$store.dispatch('zigbeealliance.distributedcomplianceledger.pki/QueryNocIcaCertificatesAll', {
-            options: { subscribe: false, all: true }
-        }).catch(error => console.error('Error fetching certificates:', error));
-    }
 };
 </script>
 

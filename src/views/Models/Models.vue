@@ -148,16 +148,6 @@ export default {
             return this.$store.getters['loggedIn'];
         }
     },
-
-    created: function () {
-        // Get all the accounts
-        this.$store.dispatch('zigbeealliance.distributedcomplianceledger.model/QueryModelAll', {
-            options: {
-                subscribe: true,
-                all: true
-            }
-        });
-    }
 };
 </script>
 
