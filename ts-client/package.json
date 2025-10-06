@@ -11,6 +11,10 @@
     }
   ],
   "main": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./*": "./*"
+  },
   "publishConfig": {
     "access": "public"
   },
