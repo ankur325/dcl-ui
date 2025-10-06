@@ -59,6 +59,10 @@
     "@cosmjs/proto-signing": "^0.32.3",
     "@cosmjs/encoding": "^0.32.3",
     "@cosmjs/crypto": "^0.32.3",
-    "@cosmjs/utils": "^0.32.3"
+    "@cosmjs/utils": "^0.32.3",
+    "usb": "$usb"
+  },
+  "optionalDependencies": {
+    "usb": "^2.14.0"
   }
 }
